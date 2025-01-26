@@ -1,12 +1,10 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "@/lib/prisma"; // Adjust the path to your Prisma client
+import { prisma } from "@/lib/prisma";
 
 const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
-    // Add your authentication providers here
-    // Example: GitHub provider
     {
       id: "github",
       name: "GitHub",
@@ -29,7 +27,6 @@ const handler = NextAuth({
         };
       },
     },
-    // Add more providers (Google, Email, etc.) as needed
   ],
   callbacks: {
     async session({ session, user }) {

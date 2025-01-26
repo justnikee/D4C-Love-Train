@@ -16,16 +16,17 @@ datasource db {
 
 model User {
   id            Int      @id @default(autoincrement())
+  clerkId       String   @unique // Add this line
   name          String?
   email         String   @unique
-  emailVerified DateTime? // Corrected type
+  emailVerified DateTime?
   password      String?
   image         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   messages      Message[]
-  accounts      Account[] // Added relationship to Account
-  sessions      Session[] // Added relationship to Session
+  accounts      Account[]
+  sessions      Session[]
 }
 
 model Message {
