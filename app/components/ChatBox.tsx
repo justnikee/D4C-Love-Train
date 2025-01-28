@@ -51,13 +51,11 @@ const ChatBox = () => {
         clearInterval(interval);
         setIsTyping(false);
 
-        // Add the bot's reply to the chat
         setMessages((prev) => [...prev, { role: "assistant", content: text }]);
       }
     }, 50); // Adjust typing speed (50ms per character)
   }
 
-  // Scroll to the bottom of the chat box when new messages are added
   useEffect(() => {
     if (chatBox.current) {
       chatBox.current.scrollTop = chatBox.current.scrollHeight;
