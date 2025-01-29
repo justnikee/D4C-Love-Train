@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ChatMessage from "./ChatMessage";
 
 const ChatBox = () => {
   const [message, setMessage] = useState("");
@@ -10,15 +11,14 @@ const ChatBox = () => {
   const [typing, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]); // Store chat messages
 
-  const chatBox = useRef<HTMLDivElement | null>(null); // Properly typed useRef
+  const chatBox = useRef<HTMLDivElement | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsTyping(true);
 
-    // Add the user's message to the chat
     setMessages((prev) => [...prev, { role: "user", content: message }]);
-    setMessage(""); // Clear the input field
+    setMessage(""); 
     console.log("message:" , message)
 
 
@@ -34,7 +34,7 @@ const ChatBox = () => {
       }
 
       const data = await response.json();
-      setTypingEffect(data.reply); // Simulate typing effect for the bot's reply
+      setTypingEffect(data.reply);
     } catch (error) {
       console.error("Error:", error);
       setReply("An error occurred while fetching the response.");
@@ -55,7 +55,7 @@ const ChatBox = () => {
 
         setMessages((prev) => [...prev, { role: "assistant", content: text }]);
       }
-    }, 50); // Adjust typing speed (50ms per character)
+    }, 50);
   }
 
   useEffect(() => {
@@ -69,16 +69,7 @@ const ChatBox = () => {
       <div className="flex flex-col justify-center items-center w-full max-w-7xl">
       <div ref={chatBox} className="flex-1 w-2/3 overflow-y-auto p-5">
         {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`my-2 py-3 px-4 rounded-xl w-fit ${
-              msg.role === "user"
-                ? "bg-[#18181B] text-[#E1E4E8] ml-auto"
-                : "bg-transparent text-[#E1E4E8] mr-auto"
-            }`}
-          >
-            {msg.content}
-          </div>
+           <ChatMessage key={index} message={msg.content} />
         ))}
         {typing && <p className="text-gray-500">Typing...</p>}
       </div>
