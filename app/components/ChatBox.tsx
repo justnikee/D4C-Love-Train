@@ -19,6 +19,8 @@ const ChatBox = () => {
     // Add the user's message to the chat
     setMessages((prev) => [...prev, { role: "user", content: message }]);
     setMessage(""); // Clear the input field
+    console.log("message:" , message)
+
 
     try {
       const response = await fetch("/api/chat", {
@@ -63,16 +65,16 @@ const ChatBox = () => {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Chat messages container */}
-      <div ref={chatBox} className="flex-1 overflow-y-auto p-5">
+    <div className="flex h-screen justify-center">
+      <div className="flex flex-col justify-center items-center w-full max-w-7xl">
+      <div ref={chatBox} className="flex-1 w-2/3 overflow-y-auto p-5">
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={`my-2 p-3 rounded-lg max-w-[80%] ${
+            className={`my-2 py-3 px-4 rounded-xl w-fit ${
               msg.role === "user"
-                ? "bg-blue-500 text-white ml-auto"
-                : "bg-gray-200 text-black mr-auto"
+                ? "bg-[#18181B] text-[#E1E4E8] ml-auto"
+                : "bg-transparent text-[#E1E4E8] mr-auto"
             }`}
           >
             {msg.content}
@@ -83,11 +85,12 @@ const ChatBox = () => {
 
       {/* Input form */}
       <form
-        className="fixed bottom-0 w-full flex justify-center p-3 border-t"
+        className="w-full flex justify-center p-3"
         onSubmit={handleSubmit}
       >
+        <div className="flex flex-col bg-gray-800 rounded-xl p-2 w-1/2">
         <Input
-          className="w-full max-w-4xl m-2"
+          className="w-full remove-focus shadow-none" 
           type="text"
           placeholder="Message LoveTrain"
           value={message}
@@ -96,7 +99,10 @@ const ChatBox = () => {
         <Button type="submit" className="m-2">
           Send
         </Button>
+        </div>
+
       </form>
+      </div>
     </div>
   );
 };
