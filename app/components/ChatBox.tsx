@@ -9,18 +9,19 @@ const ChatBox = () => {
   const [message, setMessage] = useState("");
   const [reply, setReply] = useState("");
   const [typing, setIsTyping] = useState(false);
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]); // Store chat messages
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
 
   const chatBox = useRef<HTMLDivElement | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!message.trim()) return; // Prevent empty messages
+
     setIsTyping(true);
 
     setMessages((prev) => [...prev, { role: "user", content: message }]);
-    setMessage(""); 
-    console.log("message:" , message)
-
+    setMessage("");
 
     try {
       const response = await fetch("/api/chat", {
@@ -54,6 +55,7 @@ const ChatBox = () => {
         setIsTyping(false);
 
         setMessages((prev) => [...prev, { role: "assistant", content: text }]);
+        setReply(""); // Clear the reply state
       }
     }, 50);
   }
@@ -62,37 +64,39 @@ const ChatBox = () => {
     if (chatBox.current) {
       chatBox.current.scrollTop = chatBox.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, typing]);
 
   return (
     <div className="flex h-screen justify-center">
       <div className="flex flex-col justify-center items-center w-full max-w-7xl">
-      <div ref={chatBox} className="flex-1 w-2/3 overflow-y-auto p-5">
-        {messages.map((msg, index) => (
-           <ChatMessage key={index} message={msg.content} />
-        ))}
-        {typing && <p className="text-gray-500">Typing...</p>}
-      </div>
-
-      {/* Input form */}
-      <form
-        className="w-full flex justify-center p-3"
-        onSubmit={handleSubmit}
-      >
-        <div className="flex flex-col bg-gray-800 rounded-xl p-2 w-1/2">
-        <Input
-          className="w-full remove-focus shadow-none" 
-          type="text"
-          placeholder="Message LoveTrain"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <Button type="submit" className="m-2">
-          Send
-        </Button>
+        <div ref={chatBox} className="flex-1 w-2/3 overflow-y-auto p-5">
+          {messages.map((msg, index) => (
+            <ChatMessage key={index} message={msg.content} role={msg.role} />
+          ))}
+          {typing && (
+            <div className="flex justify-start mb-4">
+              <div className="bg-gray-200 p-3 rounded-lg">
+                <p className="text-gray-500">Typing...</p>
+              </div>
+            </div>
+          )}
         </div>
 
-      </form>
+        {/* Input form */}
+        <form className="w-full flex justify-center p-3" onSubmit={handleSubmit}>
+          <div className="flex flex-col bg-gray-800 rounded-xl p-2 w-1/2">
+            <Input
+              className="w-full remove-focus shadow-none"
+              type="text"
+              placeholder="Message LoveTrain"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <Button type="submit" className="m-2">
+              Send
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
